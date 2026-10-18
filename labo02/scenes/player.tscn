@@ -2,6 +2,12 @@
 
 [ext_resource type="Texture2D" uid="uid://dn2ir0xnhk6k5" path="res://assets/sprites/knight.png" id="1_4flbx"]
 [ext_resource type="Script" uid="uid://bj1d2pskcd3ep" path="res://scripts/player.gd" id="1_onrkg"]
+[ext_resource type="Script" uid="uid://dt5hbf5ym0mmx" path="res://scripts/state_machine/state_machine.gd" id="3_smehm"]
+[ext_resource type="Script" uid="uid://b6w0lhah6efpl" path="res://scripts/state_machine/player/player_idle.gd" id="4_ur7pv"]
+[ext_resource type="Script" uid="uid://dlb5tjmbw5ld" path="res://scripts/state_machine/player/player_run.gd" id="5_y4r1p"]
+[ext_resource type="Script" uid="uid://cnu0q66j5htfa" path="res://scripts/state_machine/player/player_jump.gd" id="6_d2wvv"]
+[ext_resource type="Script" uid="uid://c0pcoyl3eh3db" path="res://scripts/state_machine/player/player_fall.gd" id="7_3v2ag"]
+[ext_resource type="Script" uid="uid://bc7ucysin41ar" path="res://scripts/state_machine/player/player_attack.gd" id="8_jej6c"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2els"]
 atlas = ExtResource("1_4flbx")
@@ -58,6 +64,10 @@ region = Rect2(64, 0, 32, 32)
 [sub_resource type="AtlasTexture" id="AtlasTexture_sweqy"]
 atlas = ExtResource("1_4flbx")
 region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3v2ag"]
+atlas = ExtResource("1_4flbx")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2hs0m"]
 atlas = ExtResource("1_4flbx")
@@ -163,7 +173,7 @@ animations = [{
 }],
 "loop": 0,
 "name": &"fall",
-"speed": 10.0
+"speed": 20.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -180,6 +190,14 @@ animations = [{
 }],
 "loop": 1,
 "name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3v2ag")
+}],
+"loop": 0,
+"name": &"jump",
 "speed": 5.0
 }, {
 "frames": [{
@@ -245,11 +263,28 @@ script = ExtResource("1_onrkg")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=983303649]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_2hs0m")
-animation = &"attack"
+animation = &"fall"
 autoplay = "idle"
-frame = 4
-frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1501547163]
 position = Vector2(-0.5, -4.25)
 shape = SubResource("RectangleShape2D_4flbx")
+
+[node name="StateMachine" type="Node" parent="." unique_id=1319222726 node_paths=PackedStringArray("initial_state")]
+script = ExtResource("3_smehm")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine" unique_id=1567041570]
+script = ExtResource("4_ur7pv")
+
+[node name="Run" type="Node" parent="StateMachine" unique_id=1597722975]
+script = ExtResource("5_y4r1p")
+
+[node name="Jump" type="Node" parent="StateMachine" unique_id=1228799757]
+script = ExtResource("6_d2wvv")
+
+[node name="Fall" type="Node" parent="StateMachine" unique_id=1707114982]
+script = ExtResource("7_3v2ag")
+
+[node name="Attack" type="Node" parent="StateMachine" unique_id=1843249264]
+script = ExtResource("8_jej6c")
